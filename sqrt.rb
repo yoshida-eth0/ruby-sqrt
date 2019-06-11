@@ -8,6 +8,39 @@ class Sqrt < Numeric
   @@inspect_mode = INSPECT_MODE::VALUE
 
 
+  class Value
+    attr_reader :number
+    attr_reader :sqrt
+
+    def initialize(number: 1, sqrt: 1)
+      @number = number
+      @sqrt = sqrt
+    end
+
+    def *(other)
+      if self.class===other
+        n = @number * other.number
+        s = 1
+        if @sqrt==other.sqrt
+          n *= @sqrt
+        else
+          s = @sqrt * other.sqrt
+        end
+
+        self.class.new(number: n, sqrt: s)
+      end
+    end
+
+    def eql?(other)
+      self.class===other && @number==other.number && @sqrt==other.sqrt
+    end
+
+    def hash
+      [@number, @sqrt].hash
+    end
+  end
+
+
   attr_reader :values
 
   def initialize(values)
@@ -51,14 +84,8 @@ class Sqrt < Numeric
         k = k1 * k2
         v = v1 * v2
 
-        sign = 1
-        #if Complex===k1 && Complex===k2 && k1.imag==k2.imag && (k1.real<0 || k2.real<0) && 0<=k.real
-        if Complex===k1 && Complex===k2 && k1.imag==k2.imag && (k1.real<0 || k2.real<0)
-          sign = -1
-        end
-
         values[k] ||= 0
-        values[k] += v * sign
+        values[k] += v
       }
     }
     values.delete_if {|k,v| v==0}
@@ -77,7 +104,7 @@ class Sqrt < Numeric
 
     if other.int?
       result = self.class.create(1)
-      other_i = other.to_i
+      other_i = other.real.to_i
       other_i.abs.times {|i|
         result *= self
       }
@@ -86,31 +113,7 @@ class Sqrt < Numeric
       end
       result
     else
-      #if @values.length==1 && other.values.length==1
-      #  k2 = other.value
-      #  #if k2.to_i==k2
-      #  #  k2 = k2.to_i
-      #  #end
-      #  v2 = k2<0 ? -1 : 1
-      #  k2 *= v2
-
-      #  values = {}
-      #  @values.each {|k1, v1|
-      #    if v2==1
-      #      k = k1 ** k2
-      #    else
-      #      k = Rational(1, k1 ** k2)
-      #    end
-
-      #    values[k] ||= 0
-      #    values[k] += v1
-      #  }
-      #  values.delete_if {|k,v| v==0}
-
-      #  self.class.new(values)
-      #else
-        self.class.number(self.value ** other.value)
-      #end
+      self.class.number(self.value ** other.value)
     end
   end
 
@@ -130,16 +133,38 @@ class Sqrt < Numeric
 
   def value
     @values.map {|k, v|
-      Math.sqrt(k) * v
+      if k.sqrt
+        k.number * Math.sqrt(Complex(k.sqrt)) * v
+      else
+        k.number * v
+      end
     }.sum
   end
 
+  def real
+    value.real
+  end
+
+  def imag
+    Complex(value).imag
+  end
+
   def to_i
-    value.to_i
+    c = to_c
+    if c.imag.zero?
+      c.real.to_i
+    else
+      raise RangeError, "can't convert %s into Integer" % c
+    end
   end
 
   def to_f
-    value.to_f
+    c = to_c
+    if c.imag.zero?
+      c.real.to_f
+    else
+      raise RangeError, "can't convert %s into Float" % c
+    end
   end
 
   def to_c
@@ -151,20 +176,35 @@ class Sqrt < Numeric
   end
 
   def to_expr_s
-    result = @values.map {|k, v|
-      k_str = k.to_s
-      if Complex===k || Rational===k
-        k_str = "(%s)" % k_str
+    value_to_s = -> (v) {
+      if Complex===v && v.imag.zero?
+        v = v.real
+      elsif Rational===v
+        v = v.to_s.sub(/\/1$/, "")
       end
+      v = v.to_s
+      if v !~ /^[\d\.]+$/
+        v = "(%s)" % v
+      end
+      v
+    }
 
-      if v==1
-        "\u221A%s" % [k_str]
-      elsif 0<v
-        "%s\u221A%s" % [v, k_str]
-      elsif v==-1
-        "(-\u221A%s)" % [k_str]
+    result = @values.map {|k, v|
+      n = k.number * v
+      s = k.sqrt
+
+      if s!=1
+        if n==1
+          "\u221A%s" % value_to_s[s]
+        elsif 0<n
+          "%s\u221A%s" % [value_to_s[n], value_to_s[s]]
+        elsif n==-1
+          "(-\u221A%s)" % value_to_s[s]
+        else
+          "(%s\u221A%s)" % [value_to_s[n], value_to_s[s]]
+        end
       else
-        "(%s\u221A%s)" % [v, k_str]
+        value_to_s[n]
       end
     }
 
@@ -176,6 +216,10 @@ class Sqrt < Numeric
   end
 
   def inspect
+    to_s
+  end
+
+  def to_s
     case @@inspect_mode
     when INSPECT_MODE::EXPR
       to_expr_s
@@ -184,17 +228,12 @@ class Sqrt < Numeric
     end
   end
 
-  def to_s
-    inspect
-  end
-
   def real?
-    !imag?
+    imag.zero?
   end
 
   def imag?
-    v = value
-    Complex===v && !v.imag.zero?
+    !real?
   end
 
   def int?
@@ -206,7 +245,7 @@ class Sqrt < Numeric
   def float?
     v = value
     is_imag = Complex===v && !v.imag.zero?
-    !is_imag && v.real!=v.real.to_i
+    !is_imag && Float===v.real && v.real!=v.real.to_i
   end
 
   def self.create(v)
@@ -218,16 +257,11 @@ class Sqrt < Numeric
   end
 
   def self.number(v)
-    sign = Complex(v).real<0 ? -1 : 1
-    new({(v ** 2) => sign})
+    new({Value.new(number: v) => 1})
   end
 
   def self.sqrt(v)
-    if Complex(v).real<0
-      new({v*-1 => -1})
-    else
-      new({v => 1})
-    end
+    new({Value.new(sqrt: v) => 1})
   end
 end
 

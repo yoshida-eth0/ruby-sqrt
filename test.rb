@@ -7,7 +7,7 @@ class TestSqrt < Test::Unit::TestCase
     assert_equal 1, Sqrt(1)
 
     # \sqrt{2}
-    assert_equal Math.sqrt(2), Sqrt(2)
+    assert_in_delta 1.4142135623730951, Sqrt(2)
 
     # 1
     assert_equal 1, Sqrt.number(1)
@@ -24,7 +24,7 @@ class TestSqrt < Test::Unit::TestCase
     assert_equal -1, -Sqrt(1)
 
     # \sqrt{2} + \sqrt{2}
-    assert_equal Math.sqrt(2)*2, Sqrt(2) + Sqrt(2)
+    assert_in_delta 2.8284271247461903, Sqrt(2) + Sqrt(2)
 
     # \sqrt{2} - \sqrt{2}
     assert_equal 0, Sqrt(2) - Sqrt(2)
@@ -45,7 +45,7 @@ class TestSqrt < Test::Unit::TestCase
     assert_equal 0.5, (Sqrt(2) ** -(Sqrt(2) ** 2)).value
 
     # \sqrt{2} ** \sqrt{2}
-    assert_equal Math.sqrt(2) ** Math.sqrt(2), (Sqrt(2) ** Sqrt(2)).value
+    assert_in_delta 1.632526919438153, Sqrt(2) ** Sqrt(2)
   end
 
   def test_complex
@@ -65,7 +65,7 @@ class TestSqrt < Test::Unit::TestCase
     assert_equal 1i, (Sqrt(1i) * Sqrt(1i)).to_c
 
     # \sqrt{1i} * \sqrt{1i} * \sqrt{1i} * \sqrt{1i}
-    assert_equal 1, Sqrt(1i) * Sqrt(1i) * Sqrt(1i) * Sqrt(1i)
+    assert_equal -1, Sqrt(1i) * Sqrt(1i) * Sqrt(1i) * Sqrt(1i)
   end
 
   def test_exponentiation
@@ -81,9 +81,9 @@ class TestSqrt < Test::Unit::TestCase
     assert_equal -4, (Sqrt(7) + Sqrt(11)) * (Sqrt(7) - Sqrt(11))
 
     # (\sqrt{7} + \sqrt{11}) * (\sqrt{7} + \sqrt{11})
-    assert_equal 7 + Math.sqrt(77)*2 + 11, (Sqrt(7) + Sqrt(11)) * (Sqrt(7) + Sqrt(11))
+    assert_in_delta 35.54992877478425, (Sqrt(7) + Sqrt(11)) * (Sqrt(7) + Sqrt(11))
 
     # (\sqrt{7} + \sqrt{11}) ** 2
-    assert_equal 7 + Math.sqrt(77)*2 + 11, ((Sqrt(7) + Sqrt(11)) ** 2).value
+    assert_in_delta 35.54992877478425, ((Sqrt(7) + Sqrt(11)) ** 2).to_f
   end
 end
