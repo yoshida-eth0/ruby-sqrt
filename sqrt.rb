@@ -48,17 +48,17 @@ class Sqrt < Numeric
   end
 
   def -@
-    values = self.values.map{|k,v| [k, -v]}.to_h
+    values = self.values.map{|v,c| [v, -c]}.to_h
     self.class.new(values)
   end
 
   def +(other)
     other = self.class.create(other)
 
-    values = @values.merge(other.values) {|k, v1, v2|
-      v1 + v2
+    values = @values.merge(other.values) {|v, c1, c2|
+      c1 + c2
     }
-    values.delete_if {|k,v| v==0}
+    values.delete_if {|v,c| c==0}
 
     self.class.new(values)
   end
@@ -66,11 +66,11 @@ class Sqrt < Numeric
   def -(other)
     other = self.class.create(other)
 
-    other_values = other.values.map{|k,v| [k, -v]}.to_h
-    values = @values.merge(other_values) {|k, v1, v2|
-      v1 + v2
+    other_values = other.values.map{|v,c| [v, -c]}.to_h
+    values = @values.merge(other_values) {|v, c1, c2|
+      c1 + c2
     }
-    values.delete_if {|k,v| v==0}
+    values.delete_if {|v,c| v==0}
 
     self.class.new(values)
   end
@@ -79,16 +79,16 @@ class Sqrt < Numeric
     other = self.class.create(other)
 
     values = {}
-    @values.each {|k1, v1|
-      other.values.each {|k2, v2|
-        k = k1 * k2
+    @values.each {|v1, c1|
+      other.values.each {|v2, c2|
         v = v1 * v2
+        c = c1 * c2
 
-        values[k] ||= 0
-        values[k] += v
+        values[v] ||= 0
+        values[v] += c
       }
     }
-    values.delete_if {|k,v| v==0}
+    values.delete_if {|v,c| c==0}
 
     self.class.new(values)
   end
@@ -132,12 +132,8 @@ class Sqrt < Numeric
   end
 
   def value
-    @values.map {|k, v|
-      if k.sqrt
-        k.number * Math.sqrt(Complex(k.sqrt)) * v
-      else
-        k.number * v
-      end
+    @values.map {|v, c|
+      v.number * Math.sqrt(Complex(v.sqrt)) * c
     }.sum
   end
 
@@ -189,9 +185,9 @@ class Sqrt < Numeric
       v
     }
 
-    result = @values.map {|k, v|
-      n = k.number * v
-      s = k.sqrt
+    result = @values.map {|v, c|
+      n = v.number * c
+      s = v.sqrt
 
       if s!=1
         if n==1
