@@ -5,7 +5,15 @@ require 'hpsqrt/version'
 
 class HpSqrt < Numeric
 
-  @@inspect_mode = INSPECT_MODE::DUMP
+  @@inspect_mode = INSPECT_MODE::VALUE
+
+  def self.inspect_mode
+    @@inspect_mode
+  end
+
+  def self.inspect_mode=(v)
+    @@inspect_mode = v
+  end
 
 
   attr_reader :values
@@ -199,7 +207,7 @@ class HpSqrt < Numeric
       value.to_s
     when INSPECT_MODE::EXPR
       expr
-    when INSPECT_MODE::DUMP
+    else
       "#<%s:0x%016x value=(%s) expr=(%s)>" % [self.class.name, self.object_id, value, expr]
     end
   end

@@ -23,22 +23,19 @@ Or install it yourself as:
     require 'hpsqrt/core_ext'
     
     p Sqrt(2)
-    # => #<HpSqrt:0x00003ff699526258 value=(1.4142135623730951+0.0i) expr=(√2)> 
+    #  => 1.4142135623730951+0.0i
     
-    p Sqrt(2).to_f
-    #  => 1.4142135623730951
+    p Sqrt(2) ** 2
+    #  => 2.0+0.0i
     
-    p (Sqrt(2) ** 2).to_f
-    #  => 2.0 
+    p Sqrt(3) * Sqrt(5) * Sqrt(15)
+    #  => 15.0+0.0i
     
-    p (Sqrt(3) * Sqrt(5) * Sqrt(15)).to_f
-    #  => 15.0 
+    p Sqrt(1i) ** 4
+    #  => -1.0+0.0i
     
-    p (Sqrt(1i) ** 4).to_c
-    #  => (-1.0+0.0i) 
-    
-    p ((Sqrt(7) + Sqrt(11)) * (Sqrt(7) - Sqrt(11))).to_f
-    #  => -4.0 
+    p (Sqrt(7) + Sqrt(11)) * (Sqrt(7) - Sqrt(11))
+    #  => -4.0+0.0i
 
 ## Contributing
 
