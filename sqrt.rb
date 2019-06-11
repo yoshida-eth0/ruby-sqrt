@@ -182,7 +182,7 @@ class Sqrt < Numeric
     value.to_r
   end
 
-  def to_expr_s
+  def expr
     value_to_s = -> (v) {
       if Complex===v && v.imag.zero?
         v = v.real
@@ -231,9 +231,9 @@ class Sqrt < Numeric
     when INSPECT_MODE::VALUE
       value.to_s
     when INSPECT_MODE::EXPR
-      to_expr_s
+      expr
     when INSPECT_MODE::DUMP
-      "#<%s:0x%016x value=(%s) expr=(%s)>" % [self.class.name, self.object_id, value, to_expr_s]
+      "#<%s:0x%016x value=(%s) expr=(%s)>" % [self.class.name, self.object_id, value, expr]
     end
   end
 
