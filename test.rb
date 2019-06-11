@@ -85,5 +85,11 @@ class TestSqrt < Test::Unit::TestCase
 
     # (\sqrt{7} + \sqrt{11}) ** 2
     assert_in_delta 35.54992877478425, ((Sqrt(7) + Sqrt(11)) ** 2).to_f
+
+    # (\sqrt{7} + \sqrt{11}) / (\sqrt{7} + \sqrt{11})
+    assert_equal 1, (Sqrt(7) + Sqrt(11)) / (Sqrt(7) + Sqrt(11))
+
+    # (\sqrt{7} + \sqrt{11}) / (\sqrt{7} - \sqrt{11})
+    assert_in_delta -8.887482193696064, (Sqrt(7) + Sqrt(11)) / (Sqrt(7) - Sqrt(11))
   end
 end

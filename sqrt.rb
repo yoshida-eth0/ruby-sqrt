@@ -1,11 +1,12 @@
 class Sqrt < Numeric
 
   module INSPECT_MODE
-    EXPR = :expr
     VALUE = :value
+    EXPR = :expr
+    DUMP = :dump
   end
 
-  @@inspect_mode = INSPECT_MODE::VALUE
+  @@inspect_mode = INSPECT_MODE::DUMP
 
 
   class Value
@@ -94,9 +95,19 @@ class Sqrt < Numeric
   end
 
   def /(other)
-    # TODO
     other = self.class.create(other)
-    self.class.number(self.value / other.value)
+    other_inv = Value.new(number: Rational(1, other.value))
+
+    values = {}
+    @values.each {|v, c|
+      v *= other_inv
+
+      values[v] ||= 0
+      values[v] += c
+    }
+    values.delete_if {|v,c| c==0}
+
+    self.class.new(values)
   end
 
   def **(other)
@@ -192,7 +203,7 @@ class Sqrt < Numeric
       if s!=1
         if n==1
           "\u221A%s" % value_to_s[s]
-        elsif 0<n
+        elsif 0<n.real
           "%s\u221A%s" % [value_to_s[n], value_to_s[s]]
         elsif n==-1
           "(-\u221A%s)" % value_to_s[s]
@@ -217,10 +228,12 @@ class Sqrt < Numeric
 
   def to_s
     case @@inspect_mode
-    when INSPECT_MODE::EXPR
-      to_expr_s
     when INSPECT_MODE::VALUE
       value.to_s
+    when INSPECT_MODE::EXPR
+      to_expr_s
+    when INSPECT_MODE::DUMP
+      "#<%s:0x%016x value=(%s) expr=(%s)>" % [self.class.name, self.object_id, value, to_expr_s]
     end
   end
 
