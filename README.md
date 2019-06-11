@@ -1,8 +1,6 @@
-# Hpsqrt
+# HpSqrt
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hpsqrt`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+High precision square root library for Ruby.
 
 ## Installation
 
@@ -22,17 +20,29 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+    require 'hpsqrt/core_ext'
+    
+    p Sqrt(2)
+    # => #<HpSqrt:0x00003ff699526258 value=(1.4142135623730951+0.0i) expr=(√2)> 
+    
+    p Sqrt(2).to_f
+    #  => 1.4142135623730951
+    
+    p (Sqrt(2) ** 2).to_f
+    #  => 2.0 
+    
+    p (Sqrt(3) * Sqrt(5) * Sqrt(15)).to_f
+    #  => 15.0 
+    
+    p (Sqrt(1i) ** 4).to_c
+    #  => (-1.0+0.0i) 
+    
+    p ((Sqrt(7) + Sqrt(11)) * (Sqrt(7) - Sqrt(11))).to_f
+    #  => -4.0 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/hpsqrt.
+Bug reports and pull requests are welcome on GitHub at https://github.com/yoshida-eth0/ruby-sqrt.
 
 ## License
 
