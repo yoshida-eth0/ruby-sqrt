@@ -16,6 +16,7 @@ class Sqrt < Numeric
     def initialize(number: 1, sqrt: 1)
       @number = number
       @sqrt = sqrt
+      freeze
     end
 
     def *(other)
@@ -45,7 +46,8 @@ class Sqrt < Numeric
   attr_reader :values
 
   def initialize(values)
-    @values = values
+    @values = values.freeze
+    freeze
   end
 
   def -@
