@@ -1,5 +1,5 @@
 require 'hpsqrt/inspect_mode'
-require 'hpsqrt/value'
+require 'hpsqrt/term'
 require 'hpsqrt/version'
 
 
@@ -16,73 +16,73 @@ class HpSqrt < Numeric
   end
 
 
-  attr_reader :values
+  attr_reader :terms
 
-  def initialize(values)
-    @values = values.freeze
+  def initialize(terms)
+    @terms = terms.freeze
     freeze
   end
 
   def -@
-    values = self.values.map{|v,c| [v, -c]}.to_h
-    self.class.new(values)
+    terms = @terms.map{|t,c| [t, -c]}.to_h
+    self.class.new(terms)
   end
 
   def +(other)
     other = self.class.create(other)
 
-    values = @values.merge(other.values) {|v, c1, c2|
+    terms = @terms.merge(other.terms) {|t, c1, c2|
       c1 + c2
     }
-    values.delete_if {|v,c| c==0}
+    terms.delete_if {|t,c| c==0}
 
-    self.class.new(values)
+    self.class.new(terms)
   end
 
   def -(other)
     other = self.class.create(other)
 
-    other_values = other.values.map{|v,c| [v, -c]}.to_h
-    values = @values.merge(other_values) {|v, c1, c2|
+    other_terms = other.terms.map{|t,c| [t, -c]}.to_h
+    terms = @terms.merge(other_terms) {|t, c1, c2|
       c1 + c2
     }
-    values.delete_if {|v,c| v==0}
+    terms.delete_if {|t,c| c==0}
 
-    self.class.new(values)
+    self.class.new(terms)
   end
 
   def *(other)
     other = self.class.create(other)
 
-    values = {}
-    @values.each {|v1, c1|
-      other.values.each {|v2, c2|
-        v = v1 * v2
+    terms = {}
+    @terms.each {|t1, c1|
+      other.terms.each {|t2, c2|
+        t = t1 * t2
         c = c1 * c2
 
-        values[v] ||= 0
-        values[v] += c
+        terms[t] ||= 0
+        terms[t] += c
       }
     }
-    values.delete_if {|v,c| c==0}
+    terms.delete_if {|t,c| c==0}
 
-    self.class.new(values)
+    self.class.new(terms)
   end
 
   def /(other)
     other = self.class.create(other)
-    other_inv = Value.new(number: Rational(1, other.to_c))
+    other_inv = Term.new(number: Rational(1, other.to_c))
 
-    values = {}
-    @values.each {|v, c|
-      v *= other_inv
+    terms = {}
+    @terms.each {|t, c|
+      t *= other_inv
 
-      values[v] ||= 0
-      values[v] += c
+      terms[t] ||= 0
+      terms[t] += c
     }
-    values.delete_if {|v,c| c==0}
+    terms.delete_if {|t,c| c==0}
 
-    self.class.new(values)
+    self.class.new(terms)
   end
 
   def **(other)
@@ -118,8 +118,8 @@ class HpSqrt < Numeric
   end
 
   def to_c
-    @values.map {|v, c|
-      v.number * Math.sqrt(Complex(v.sqrt)) * c
+    @terms.map {|t, c|
+      t.number * Math.sqrt(Complex(t.sqrt)) * c
     }.sum.to_c
   end
 
@@ -157,7 +157,8 @@ class HpSqrt < Numeric
     value_to_s = -> (v) {
       if Complex===v && v.imag.zero?
         v = v.real
-      elsif Rational===v
+      end
+      if Rational===v
         v = v.to_s.sub(/\/1$/, "")
       end
       v = v.to_s
@@ -237,13 +238,13 @@ class HpSqrt < Numeric
   end
 
   def self.number(v)
-    new({Value.new(number: v) => 1})
+    new({Term.new(number: v) => 1})
   end
 
   def self.sqrt(v)
     if self===v
       v = v.to_c
     end
-    new({Value.new(sqrt: v) => 1})
+    new({Term.new(sqrt: v) => 1})
   end
 end

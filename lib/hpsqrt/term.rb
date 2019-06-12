@@ -1,6 +1,6 @@
 class HpSqrt < Numeric
 
-  class Value
+  class Term
     attr_reader :number
     attr_reader :sqrt
 
