@@ -95,4 +95,9 @@ class HpSqrtTest < Minitest::Test
     # (\sqrt{7} + \sqrt{11}) / (\sqrt{7} - \sqrt{11})
     assert_in_delta (-8.887482193696064), ((Sqrt(7) + Sqrt(11)) / (Sqrt(7) - Sqrt(11))).to_f
   end
+
+  def test_nested_sqrt
+    # \sqrt{\sqrt{16}}
+    assert_equal 2, Sqrt(Sqrt(16))
+  end
 end
