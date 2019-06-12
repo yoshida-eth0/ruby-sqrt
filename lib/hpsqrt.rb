@@ -245,6 +245,9 @@ class HpSqrt < Numeric
   end
 
   def self.sqrt(v)
+    if self===v
+      v = v.to_c
+    end
     new({Value.new(sqrt: v) => 1})
   end
 end
