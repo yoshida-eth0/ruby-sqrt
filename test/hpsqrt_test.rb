@@ -10,7 +10,7 @@ class HpSqrtTest < Minitest::Test
     assert_equal 1, Sqrt(1)
 
     # \sqrt{2}
-    assert_in_delta 1.4142135623730951, Sqrt(2).value
+    assert_in_delta 1.4142135623730951, Sqrt(2).to_c
 
     # 1
     assert_equal 1, HpSqrt.number(1)
@@ -27,7 +27,7 @@ class HpSqrtTest < Minitest::Test
     assert_equal (-1), -Sqrt(1)
 
     # \sqrt{2} + \sqrt{2}
-    assert_in_delta 2.8284271247461903, (Sqrt(2) + Sqrt(2)).value
+    assert_in_delta 2.8284271247461903, (Sqrt(2) + Sqrt(2)).to_c
 
     # \sqrt{2} - \sqrt{2}
     assert_equal 0, Sqrt(2) - Sqrt(2)
@@ -45,10 +45,10 @@ class HpSqrtTest < Minitest::Test
     assert_equal 0.5, Sqrt(2) ** -2
 
     # \sqrt{2} ** -(\sqrt{2} ** 2)
-    assert_equal 0.5, (Sqrt(2) ** -(Sqrt(2) ** 2)).value
+    assert_equal 0.5, (Sqrt(2) ** -(Sqrt(2) ** 2)).to_c
 
     # \sqrt{2} ** \sqrt{2}
-    assert_in_delta 1.632526919438153, (Sqrt(2) ** Sqrt(2)).value
+    assert_in_delta 1.632526919438153, (Sqrt(2) ** Sqrt(2)).to_c
   end
 
   def test_complex

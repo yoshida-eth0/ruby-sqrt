@@ -71,7 +71,7 @@ class HpSqrt < Numeric
 
   def /(other)
     other = self.class.create(other)
-    other_inv = Value.new(number: Rational(1, other.value))
+    other_inv = Value.new(number: Rational(1, other.to_c))
 
     values = {}
     @values.each {|v, c|
@@ -99,7 +99,7 @@ class HpSqrt < Numeric
       end
       result
     else
-      self.class.number(self.value ** other.value)
+      self.class.number(self.to_c ** other.to_c)
     end
   end
 
@@ -109,26 +109,26 @@ class HpSqrt < Numeric
 
   def ==(other)
     if self.class==other
-      self.value==other.value
+      self.to_c==other.to_c
     elsif Numeric===other
-      self.value==other
+      self.to_c==other
     else
       super.==(other)
     end
   end
 
-  def value
+  def to_c
     @values.map {|v, c|
       v.number * Math.sqrt(Complex(v.sqrt)) * c
-    }.sum
+    }.sum.to_c
   end
 
   def real
-    value.real
+    to_c.real
   end
 
   def imag
-    Complex(value).imag
+    to_c.imag
   end
 
   def to_i
@@ -149,12 +149,8 @@ class HpSqrt < Numeric
     end
   end
 
-  def to_c
-    value.to_c
-  end
-
   def to_r
-    value.to_r
+    to_c.to_r
   end
 
   def expr
@@ -204,11 +200,11 @@ class HpSqrt < Numeric
   def to_s
     case @@inspect_mode
     when INSPECT_MODE::VALUE
-      value.to_s
+      to_c.to_s
     when INSPECT_MODE::EXPR
       expr
     else
-      "#<%s:0x%016x value=(%s) expr=(%s)>" % [self.class.name, self.object_id, value, expr]
+      "#<%s:0x%016x value=(%s) expr=(%s)>" % [self.class.name, self.object_id, to_c, expr]
     end
   end
 
@@ -221,13 +217,13 @@ class HpSqrt < Numeric
   end
 
   def int?
-    v = value
+    v = to_c
     is_imag = Complex===v && !v.imag.zero?
     !is_imag && v.real==v.real.to_i
   end
 
   def float?
-    v = value
+    v = to_c
     is_imag = Complex===v && !v.imag.zero?
     !is_imag && Float===v.real && v.real!=v.real.to_i
   end
