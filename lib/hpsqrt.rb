@@ -150,7 +150,12 @@ class HpSqrt < Numeric
   end
 
   def to_r
-    to_c.to_r
+    c = to_c
+    if c.imag.zero?
+      Rational(c.real, 1)
+    else
+      raise RangeError, "can't convert %s into Rational" % c
+    end
   end
 
   def expr
@@ -218,15 +223,13 @@ class HpSqrt < Numeric
   end
 
   def int?
-    v = to_c
-    is_imag = Complex===v && !v.imag.zero?
-    !is_imag && v.real==v.real.to_i
+    c = to_c
+    c.imag.zero? && c.real==c.real.to_i
   end
 
   def float?
-    v = to_c
-    is_imag = Complex===v && !v.imag.zero?
-    !is_imag && Float===v.real && v.real!=v.real.to_i
+    c = to_c
+    c.imag.zero? && Float===c.real && c.real!=c.real.to_i
   end
 
   def self.create(v)
