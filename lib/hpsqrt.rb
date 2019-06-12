@@ -130,6 +130,7 @@ class HpSqrt < Numeric
   def imag
     to_c.imag
   end
+  alias_method :imaginary, :imag
 
   def to_i
     c = to_c
