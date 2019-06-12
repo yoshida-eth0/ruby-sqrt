@@ -168,9 +168,9 @@ class HpSqrt < Numeric
       v
     }
 
-    result = @values.map {|v, c|
-      n = v.number * c
-      s = v.sqrt
+    result = @terms.map {|t, c|
+      n = t.number * c
+      s = t.sqrt
 
       if s!=1
         if n==1
@@ -238,13 +238,25 @@ class HpSqrt < Numeric
   end
 
   def self.number(v)
-    new({Term.new(number: v) => 1})
+    if v!=0
+      new({Term.new(number: v) => 1})
+    else
+      zero
+    end
   end
 
   def self.sqrt(v)
     if self===v
       v = v.to_c
     end
-    new({Term.new(sqrt: v) => 1})
+    if v!=0
+      new({Term.new(sqrt: v) => 1})
+    else
+      zero
+    end
+  end
+
+  def self.zero
+    new({})
   end
 end

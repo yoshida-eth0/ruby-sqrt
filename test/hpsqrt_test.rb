@@ -100,4 +100,14 @@ class HpSqrtTest < Minitest::Test
     # \sqrt{\sqrt{16}}
     assert_equal 2, Sqrt(Sqrt(16))
   end
+
+  def test_expr
+    assert_equal "\u221A2", Sqrt(2).expr
+    assert_equal "\u221A2 + \u221A3", (Sqrt(2) + Sqrt(3)).expr
+    assert_equal "2\u221A2", (Sqrt(2) * 2).expr
+
+    assert_equal "0", Sqrt(0).expr
+    assert_equal "1", Sqrt(1).expr
+    assert_equal "2", (Sqrt(2) ** 2).expr
+  end
 end
