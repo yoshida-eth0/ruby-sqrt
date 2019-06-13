@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-Calculation:
+High precision calculation:
 
     require 'hpsqrt/core_ext'
     
@@ -38,6 +38,10 @@ Calculation:
     
     p (Sqrt(7) + Sqrt(11)) * (Sqrt(7) - Sqrt(11))
     #  => -4.0+0.0i
+
+Support operators:
+
+    +, -, *, /, %, **, ==
 
 Type casting:
 
