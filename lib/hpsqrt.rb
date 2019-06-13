@@ -117,6 +117,20 @@ class HpSqrt < Numeric
     end
   end
 
+  def rect
+    to_c.rect
+  end
+
+  def polar
+    to_c.polar
+  end
+
+  def arg
+    to_c.arg
+  end
+  alias_method :angle, :arg
+  alias_method :phase, :arg
+
   def to_c
     @terms.map {|t, c|
       t.number * Math.sqrt(Complex(t.sqrt)) * c
