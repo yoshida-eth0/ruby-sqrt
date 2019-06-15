@@ -2,7 +2,10 @@ require 'hpsqrt'
 
 
 module Kernel
+
+  Sqrt = HpSqrt
+
   def Sqrt(v)
-    HpSqrt.sqrt(v)
+    Sqrt.sqrt(v)
   end
 end
