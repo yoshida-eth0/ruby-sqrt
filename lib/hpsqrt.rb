@@ -178,8 +178,8 @@ class HpSqrt < Numeric
       if Complex===v && v.imag.zero?
         v = v.real
       end
-      if Rational===v
-        v = v.to_s.sub(/\/1$/, "")
+      if Rational===v && v.denominator==1
+        v = v.numerator
       end
       v = v.to_s
       if v !~ /^[\d\.]+$/
