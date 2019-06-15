@@ -13,10 +13,10 @@ class HpSqrtTest < Minitest::Test
     assert_in_delta 1.4142135623730951, Sqrt(2).to_c
 
     # 1
-    assert_equal 1, HpSqrt.number(1)
+    assert_equal 1, Sqrt.number(1)
 
     # 2
-    assert_equal 2, HpSqrt.number(2)
+    assert_equal 2, Sqrt.number(2)
   end
 
   def test_operation
@@ -56,10 +56,10 @@ class HpSqrtTest < Minitest::Test
     #       なので、Sqrt.to_cでComplex同士を比較する
 
     # 1i
-    assert_equal 1i, HpSqrt.number(1i).to_c
+    assert_equal 1i, Sqrt.number(1i).to_c
 
     # 1i * 1i
-    assert_equal (-1), HpSqrt.number(1i) * HpSqrt.number(1i)
+    assert_equal (-1), Sqrt.number(1i) * Sqrt.number(1i)
 
     # \sqrt{1i}
     assert_equal Math.sqrt(1i), Sqrt(1i).to_c
