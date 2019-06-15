@@ -1,5 +1,9 @@
 # HpSqrt
 
+- master: [![Build Status](https://travis-ci.org/yoshida-eth0/ruby-sqrt.svg?branch=master)](https://travis-ci.org/yoshida-eth0/ruby-sqrt)
+
+## Overview
+
 High precision square root library for Ruby.
 
 ## Installation
