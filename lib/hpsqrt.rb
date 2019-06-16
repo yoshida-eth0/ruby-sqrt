@@ -20,6 +20,7 @@ class HpSqrt < Numeric
 
   def initialize(terms)
     @terms = terms.freeze
+    @cache = {}
     freeze
   end
 
@@ -142,7 +143,7 @@ class HpSqrt < Numeric
   alias_method :phase, :arg
 
   def to_c
-    @terms.map {|t, c|
+    @cache[:to_c] ||= @terms.map {|t, c|
       t.number * Math.sqrt(Complex(t.sqrt)) * c
     }.sum.to_c
   end
