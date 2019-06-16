@@ -1,8 +1,7 @@
+[![Build Status](https://travis-ci.org/yoshida-eth0/ruby-sqrt.svg?branch=master)](https://travis-ci.org/yoshida-eth0/ruby-sqrt)
+[![Gem Version](https://badge.fury.io/rb/hpsqrt.svg)](https://badge.fury.io/rb/hpsqrt)
+
 # HpSqrt
-
-- master: [![Build Status](https://travis-ci.org/yoshida-eth0/ruby-sqrt.svg?branch=master)](https://travis-ci.org/yoshida-eth0/ruby-sqrt)
-
-## Overview
 
 High precision square root library for Ruby.
 
