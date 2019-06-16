@@ -128,7 +128,7 @@ class HpSqrtTest < Minitest::Test
       Sqrt(1i) > 1
     end
 
-    # non numeric
+    # non numeric variable
     assert_nil Sqrt(4) <=> :abc
   end
 
