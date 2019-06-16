@@ -45,7 +45,7 @@ High precision calculation:
 
 Support operators:
 
-    +, -, *, /, %, **, ==
+    +, -, *, /, %, **, ==, <=>
 
 Type casting:
 
