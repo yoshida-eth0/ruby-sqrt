@@ -93,6 +93,32 @@ class HpSqrtTest < Minitest::Test
     assert_in_delta (-8.887482193696064), (Sqrt(7) + Sqrt(11)) / (Sqrt(7) - Sqrt(11))
   end
 
+  def test_cmp
+    # imaginary number is zero
+    assert_equal 0, Sqrt(4) <=> 2
+    assert 0 > (Sqrt(2) <=> 2)
+    assert 0 < (Sqrt(2) <=> 1)
+
+    assert_equal true, Sqrt(4) == 2
+    assert_equal false, Sqrt(4) == 3
+
+    assert_equal true, Sqrt(4) >= 2
+    assert_equal false, Sqrt(4) > 2
+    assert_equal true, Sqrt(4) <= 2
+    assert_equal false, Sqrt(4) < 2
+
+    # imaginary number is not zero
+    assert_equal 0, Sqrt.number(1i) <=> 1i
+    assert_nil Sqrt(1i) <=> 1
+
+    assert_equal true, Sqrt.number(1i) == 1i
+    assert_equal false, Sqrt(1i) == 1
+
+    assert_raises ArgumentError do
+      Sqrt(1i) > 1
+    end
+  end
+
   def test_nested_sqrt
     # \sqrt{\sqrt{16}}
     assert_equal 2, Sqrt(Sqrt(16))
