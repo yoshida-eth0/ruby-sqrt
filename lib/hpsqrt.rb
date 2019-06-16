@@ -117,6 +117,16 @@ class HpSqrt < Numeric
     end
   end
 
+  def <=>(other)
+    if self==other
+      0
+    elsif !self.real? || !other.real?
+      nil
+    else
+      self.real <=> other.real
+    end
+  end
+
   def rect
     to_c.rect
   end
