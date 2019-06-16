@@ -17,6 +17,11 @@ class HpSqrtTest < Minitest::Test
 
     # 2
     assert_equal 2, Sqrt.number(2)
+
+    # non numeric argument
+    assert_raises TypeError do
+      Sqrt(:abc)
+    end
   end
 
   def test_operation
@@ -49,6 +54,11 @@ class HpSqrtTest < Minitest::Test
 
     # \sqrt{2} ** \sqrt{2}
     assert_in_delta 1.632526919438153, Sqrt(2) ** Sqrt(2)
+
+    # non numeric variable
+    assert_raises TypeError do
+      Sqrt(2) + :abc
+    end
   end
 
   def test_complex
@@ -117,6 +127,9 @@ class HpSqrtTest < Minitest::Test
     assert_raises ArgumentError do
       Sqrt(1i) > 1
     end
+
+    # non numeric
+    assert_nil Sqrt(4) <=> :abc
   end
 
   def test_nested_sqrt

@@ -23,6 +23,7 @@ class HpSqrt < Numeric
     @cache = {}
     freeze
   end
+  private :initialize
 
   def -@
     terms = @terms.map{|t,c| [t, -c]}.to_h
@@ -119,9 +120,11 @@ class HpSqrt < Numeric
   end
 
   def <=>(other)
-    if self==other
+    if !(Numeric===other)
+      nil
+    elsif self==other
       0
-    elsif !self.real? || !other.real?
+    elsif !self.real? || !other.imag.zero?
       nil
     else
       self.real <=> other.real

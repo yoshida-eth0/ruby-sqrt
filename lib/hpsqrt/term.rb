@@ -5,6 +5,13 @@ class HpSqrt < Numeric
     attr_reader :sqrt
 
     def initialize(number: 1, sqrt: 1)
+      unless Numeric===number
+        raise TypeError, "can't convert %s into %s: %s" % [number.class.name, self.class.name, number.inspect]
+      end
+      unless Numeric===sqrt
+        raise TypeError, "can't convert %s into %s: %s" % [sqrt.class.name, self.class.name, sqrt.inspect]
+      end
+
       @number = number
       @sqrt = sqrt
       freeze
