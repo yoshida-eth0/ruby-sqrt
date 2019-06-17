@@ -90,7 +90,7 @@ class HpSqrt < Numeric
   def **(other)
     other = self.class.create(other)
 
-    if other.int?
+    if other.integer?
       result = self.class.create(1)
       other_i = other.real.to_i
       other_i.abs.times {|i|
@@ -124,7 +124,7 @@ class HpSqrt < Numeric
       nil
     elsif self==other
       0
-    elsif !self.real? || !other.imag.zero?
+    elsif !self.imag.zero? || !other.imag.zero?
       nil
     else
       self.real <=> other.real
@@ -244,14 +244,10 @@ class HpSqrt < Numeric
   end
 
   def real?
-    imag.zero?
+    false
   end
 
-  def imag?
-    !real?
-  end
-
-  def int?
+  def integer?
     c = to_c
     c.imag.zero? && c.real==c.real.to_i
   end

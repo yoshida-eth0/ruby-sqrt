@@ -86,22 +86,10 @@ Type check:
 ```ruby
 require 'hpsqrt/core_ext'
 
-# real? returns true if imaginary number is 0
-p Sqrt(5).real?
-#  => true
-p Sqrt(1i).real?
+# integer? return true if after the real decimal point is 0 and imaginary number is 0
+p Sqrt(2).integer?
 #  => false
-
-# imag? returns true if imaginary number is not 0
-p Sqrt(5).imag?
-#  => false
-p Sqrt(1i).imag?
-#  => true
-
-# int? return true if after the real decimal point is 0 and imaginary number is 0
-p Sqrt(2).int?
-#  => false
-p Sqrt(4).int?
+p Sqrt(4).integer?
 #  => true
 
 # float? return true if after the real decimal point is not 0 and imaginary number is 0
