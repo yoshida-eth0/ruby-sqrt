@@ -73,7 +73,7 @@ class HpSqrt < Numeric
 
   def /(other)
     other = self.class.create(other)
-    other_inv = Term.new(number: Rational(1, other.to_c))
+    other_inv = Term.new(number: Rational(1, other.to_rc))
 
     terms = {}
     @terms.each {|t, c|
@@ -101,7 +101,7 @@ class HpSqrt < Numeric
       end
       result
     else
-      self.class.number(self.to_c ** other.to_c)
+      self.class.number(self.to_rc ** other.to_rc)
     end
   end
 
@@ -111,9 +111,9 @@ class HpSqrt < Numeric
 
   def ==(other)
     if self.class==other
-      self.to_c==other.to_c
+      self.to_rc==other.to_rc
     elsif Numeric===other
-      self.to_c==other
+      self.to_rc==other
     else
       super.==(other)
     end
@@ -161,29 +161,37 @@ class HpSqrt < Numeric
   alias_method :imaginary, :imag
 
   def to_i
-    c = to_c
-    if c.imag.zero?
-      c.real.to_i
+    if imag.zero?
+      real.to_i
     else
-      raise RangeError, "can't convert %s into Integer" % c
+      raise RangeError, "can't convert %s into Integer" % to_c
     end
   end
 
   def to_f
-    c = to_c
-    if c.imag.zero?
-      c.real.to_f
+    if imag.zero?
+      real.to_f
     else
-      raise RangeError, "can't convert %s into Float" % c
+      raise RangeError, "can't convert %s into Float" % to_c
     end
   end
 
+  def to_rc
+    @cache[:to_rc] ||= @terms.map {|t, c|
+      nc = Complex(t.number.real.to_r, t.number.imag.to_r)
+
+      sc = Math.sqrt(Complex(t.sqrt))
+      sc = Complex(sc.real.to_r, sc.imag.to_r)
+
+      nc * sc * c
+    }.sum.nonzero? || Complex(0.to_r, 0.to_r)
+  end
+
   def to_r
-    c = to_c
-    if c.imag.zero?
-      Rational(c.real, 1)
+    if to_rc.imag.zero?
+      to_rc.real
     else
-      raise RangeError, "can't convert %s into Rational" % c
+      raise RangeError, "can't convert %s into Rational" % to_rc
     end
   end
 
@@ -247,14 +255,16 @@ class HpSqrt < Numeric
     false
   end
 
+  def complex?
+    !imag.zero?
+  end
+
   def integer?
-    c = to_c
-    c.imag.zero? && c.real==c.real.to_i
+    imag.zero? && real==real.to_i
   end
 
   def float?
-    c = to_c
-    c.imag.zero? && Float===c.real && c.real!=c.real.to_i
+    imag.zero? && Float===real && real!=real.to_i
   end
 
   def self.create(v)

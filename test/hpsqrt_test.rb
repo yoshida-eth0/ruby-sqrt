@@ -132,6 +132,41 @@ class HpSqrtTest < Minitest::Test
     assert_nil Sqrt(4) <=> :abc
   end
 
+  def test_cast
+    # to_c
+    assert_equal 1i, Sqrt(-1).to_c
+    assert_equal Complex, Sqrt(-1).to_c.class
+
+    # to_i
+    assert_equal 1, Sqrt(2).to_i
+    assert_equal Integer, Sqrt(2).to_i.class
+
+    assert_raises RangeError do
+      Sqrt(-1).to_i
+    end
+
+    # to_f
+    assert_in_delta 1.4142135623730951, Sqrt(2).to_f
+    assert_equal Float, Sqrt(2).to_f.class
+
+    assert_raises RangeError do
+      Sqrt(-1).to_f
+    end
+
+    # to_rc
+    assert_equal Rational(2, 3), (Sqrt(2)**2 / Sqrt(3)**2).to_rc
+    assert_equal Complex(Rational(1, 3), Rational(1, 3)), (Sqrt(Rational(1,3)) ** 2 * Complex(1, 1)).to_rc
+    assert_equal Complex, (Sqrt(Rational(1,3)) ** 2 * Complex(1, 1)).to_rc.class
+
+    # to_r
+    assert_equal Rational(2, 3), (Sqrt(4) * Rational(1,3)).to_r
+    assert_equal Rational, (Sqrt(4) * Rational(1,3)).to_r.class
+
+    assert_raises RangeError do
+      Sqrt(-1).to_r
+    end
+  end
+
   def test_nested_sqrt
     # \sqrt{\sqrt{16}}
     assert_equal 2, Sqrt(Sqrt(16))

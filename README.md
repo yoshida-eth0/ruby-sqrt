@@ -65,6 +65,10 @@ p Sqrt(5).to_i
 p Sqrt(4).to_r
 #  => (2/1)
 
+# to Complex (involving Rational)
+p (Sqrt(2)**2).to_rc
+#  => ((2/1)+(0/1)*i)
+
 # to Complex
 p Sqrt(-1i).to_c
 #  => (0.7071067811865476-0.7071067811865476i) 
@@ -78,7 +82,7 @@ p Sqrt(1i).imag
 #  => -0.7071067811865476
 
 p (Sqrt(5) + Sqrt(7)).expr
-#  => "√5 + √7" 
+#  => "√5 + √7"
 ```
 
 Type check:
@@ -86,17 +90,23 @@ Type check:
 ```ruby
 require 'hpsqrt/core_ext'
 
-# integer? return true if after the real decimal point is 0 and imaginary number is 0
+# integer? returns true if after the real decimal point is 0 and imaginary number is 0
 p Sqrt(2).integer?
 #  => false
 p Sqrt(4).integer?
 #  => true
 
-# float? return true if after the real decimal point is not 0 and imaginary number is 0
+# float? returns true if after the real decimal point is not 0 and imaginary number is 0
 p Sqrt(2).float?
 #  => true
 p Sqrt(4).float?
 #  => false
+
+# complex? returns true if imaginary number is not 0
+p Sqrt(1).complex?
+#  => false
+p Sqrt(-1).complex?
+#  => true
 ```
 
 ## Contributing
