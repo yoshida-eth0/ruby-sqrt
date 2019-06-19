@@ -69,7 +69,7 @@ p Sqrt(4).to_r
 p (Sqrt(2)**2).to_rc
 #  => ((2/1)+(0/1)*i)
 
-# to Complex
+# to Complex (involving Float)
 p Sqrt(-1i).to_c
 #  => (0.7071067811865476-0.7071067811865476i) 
 
@@ -81,6 +81,7 @@ p Sqrt(-1i).real
 p Sqrt(1i).imag
 #  => -0.7071067811865476
 
+# to expression string
 p (Sqrt(5) + Sqrt(7)).expr
 #  => "√5 + √7"
 ```

@@ -145,10 +145,19 @@ class HpSqrt < Numeric
   alias_method :angle, :arg
   alias_method :phase, :arg
 
+  def to_rc
+    @cache[:to_rc] ||= @terms.map {|t, c|
+      nc = Complex(t.number.real.to_r, t.number.imag.to_r)
+
+      sc = Math.sqrt(Complex(t.sqrt))
+      sc = Complex(sc.real.to_r, sc.imag.to_r)
+
+      nc * sc * c
+    }.sum(Complex(0.to_r, 0.to_r))
+  end
+
   def to_c
-    @cache[:to_c] ||= @terms.map {|t, c|
-      t.number * Math.sqrt(Complex(t.sqrt)) * c
-    }.sum.to_c
+    @cache[:to_c] ||= Complex(to_rc.real.to_f, to_rc.imag.to_f)
   end
 
   def real
@@ -176,17 +185,6 @@ class HpSqrt < Numeric
     end
   end
 
-  def to_rc
-    @cache[:to_rc] ||= @terms.map {|t, c|
-      nc = Complex(t.number.real.to_r, t.number.imag.to_r)
-
-      sc = Math.sqrt(Complex(t.sqrt))
-      sc = Complex(sc.real.to_r, sc.imag.to_r)
-
-      nc * sc * c
-    }.sum.nonzero? || Complex(0.to_r, 0.to_r)
-  end
-
   def to_r
     if to_rc.imag.zero?
       to_rc.real
@@ -196,43 +194,45 @@ class HpSqrt < Numeric
   end
 
   def expr
-    value_to_s = -> (v) {
-      if Complex===v && v.imag.zero?
-        v = v.real
-      end
-      if Rational===v && v.denominator==1
-        v = v.numerator
-      end
-      v = v.to_s
-      if v !~ /^[\d\.]+$/
-        v = "(%s)" % v
-      end
-      v
-    }
-
-    result = @terms.map {|t, c|
-      n = t.number * c
-      s = t.sqrt
-
-      if s!=1
-        if n==1
-          "\u221A%s" % value_to_s[s]
-        elsif 0<n.real
-          "%s\u221A%s" % [value_to_s[n], value_to_s[s]]
-        elsif n==-1
-          "(-\u221A%s)" % value_to_s[s]
-        else
-          "(%s\u221A%s)" % [value_to_s[n], value_to_s[s]]
+    @cache[:expr] ||= begin
+      value_to_s = -> (v) {
+        if Complex===v && v.imag.zero?
+          v = v.real
         end
-      else
-        value_to_s[n]
-      end
-    }
+        if Rational===v && v.denominator==1
+          v = v.numerator
+        end
+        v = v.to_s
+        if v !~ /^[\d\.]+$/
+          v = "(%s)" % v
+        end
+        v
+      }
 
-    if 0<result.length
-      result.join(" + ")
-    else
-      "0"
+      result = @terms.map {|t, c|
+        n = t.number * c
+        s = t.sqrt
+
+        if s!=1
+          if n==1
+            "\u221A%s" % value_to_s[s]
+          elsif 0<n.real
+            "%s\u221A%s" % [value_to_s[n], value_to_s[s]]
+          elsif n==-1
+            "(-\u221A%s)" % value_to_s[s]
+          else
+            "(%s\u221A%s)" % [value_to_s[n], value_to_s[s]]
+          end
+        else
+          value_to_s[n]
+        end
+      }
+
+      if 0<result.length
+        result.join(" + ")
+      else
+        "0"
+      end
     end
   end
 
@@ -256,15 +256,15 @@ class HpSqrt < Numeric
   end
 
   def complex?
-    !imag.zero?
+    !to_rc.imag.zero?
   end
 
   def integer?
-    imag.zero? && real==real.to_i
+    to_rc.imag.zero? && to_rc.real.denominator==1
   end
 
   def float?
-    imag.zero? && Float===real && real!=real.to_i
+    to_rc.imag.zero? && to_rc.real.denominator!=1
   end
 
   def self.create(v)
@@ -285,7 +285,7 @@ class HpSqrt < Numeric
 
   def self.sqrt(v)
     if self===v
-      v = v.to_c
+      v = v.to_rc
     end
     if v!=0
       new({Term.new(sqrt: v) => 1})
